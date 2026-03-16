@@ -4,8 +4,9 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # PFX с приватным ключом: cert.pfx или RSA.pfx (положите файл в ./certs)
       SIGN_KEYSTORE_PATH: /certs/cert.pfx
-      SIGN_KEYSTORE_PASSWORD: ${SIGN_KEYSTORE_PASSWORD:-1q2w3e4r5t}
+      SIGN_KEYSTORE_PASSWORD: "1q2w3e4r5t"
       SIGN_PROVIDER: ${SIGN_PROVIDER:-GAMMA}
       SIGN_SIGNATURE_ALGORITHM: ${SIGN_SIGNATURE_ALGORITHM:-GOST3410-2015-512}
       SIGN_JWS_ALGORITHM: ${SIGN_JWS_ALGORITHM:-GOST3410-2015-512}

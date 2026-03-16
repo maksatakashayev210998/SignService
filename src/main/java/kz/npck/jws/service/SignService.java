@@ -11,11 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Set;
 
 @Service
@@ -56,24 +60,142 @@ public class SignService {
 
         Security.addProvider(new GammaTechProvider());
 
-        // Загружаем PFX стандартным JDK — у GammaTechProvider баг в engineLoad (replaceAll по бинарным данным).
-        // GAMMA используем только для подписи (Signature), не для KeyStore.
-        KeyStore store = KeyStore.getInstance("PKCS12");
-        try (FileInputStream fis = new FileInputStream(props.getKeystorePath())) {
-            store.load(fis, props.getKeystorePassword().toCharArray());
+        String path = props.getKeystorePath();
+        java.nio.file.Path pathObj = Paths.get(path);
+        if (!Files.exists(pathObj)) {
+            throw new IllegalStateException("Keystore file not found: " + path + " (check volume mount, e.g. ./certs:/certs)");
         }
+        byte[] keystoreBytes = Files.readAllBytes(pathObj);
+        char[] password = props.getKeystorePassword().toCharArray();
+        if (password == null || password.length == 0) {
+            throw new IllegalStateException("Keystore password is empty (set SIGN_KEYSTORE_PASSWORD env)");
+        }
+        log.info("Loading keystore from {} ({} bytes), password length={}", path, keystoreBytes.length, password.length);
 
-        if (!store.aliases().hasMoreElements()) {
-            throw new IllegalStateException("Keystore has no entries (wrong password or empty PFX?)");
+        // Сначала пробуем загрузить через GAMMA — тогда ключ будет "известен" провайдеру и подпись не даст "Unknown private key".
+        // Как в Example.kt: KeyStore.getInstance("PKCS12", "GAMMA"), alias может быть StoreObjectParam с getSn().
+        KeyStore store = loadKeyStore(keystoreBytes, password);
+        Object keyId = getKeyId(store);
+        String alias = keyId == null ? null : (keyId instanceof String ? (String) keyId : keyId.toString());
+        PrivateKey pk = (PrivateKey) store.getKey(alias, password);
+        X509Certificate cert = (X509Certificate) store.getCertificate(alias);
+        if (pk == null || cert == null) {
+            var pair = getFirstKeyAndCert(store, password);
+            if (pair != null) {
+                pk = pair.key;
+                cert = pair.cert;
+            }
         }
-        String alias = store.aliases().nextElement();
-        privateKey = (PrivateKey) store.getKey(alias, props.getKeystorePassword().toCharArray());
-        certificate = (X509Certificate) store.getCertificate(alias);
+        if (pk == null || cert == null) {
+            logErrorDetails(store, alias, password);
+            String hint = (cert != null && pk == null)
+                    ? "PFX opens and contains a certificate, but NO PRIVATE KEY was found. Re-export the PFX from TumarCSP/token WITH the private key, or the key may use a different password."
+                    : "Keystore has no key/cert for this password. Check password and that PFX contains a private key.";
+            throw new IllegalStateException(hint + " (alias '" + alias + "' -> key=" + (pk != null) + " cert=" + (cert != null) + ")");
+        }
+        this.privateKey = pk;
+        this.certificate = cert;
 
         var resolved = resolveSignatureAlgorithm(privateKey, props.getProvider(), props.getSignatureAlgorithm());
         this.resolvedSignatureAlgorithm = resolved.algorithm;
         this.resolvedProvider = resolved.provider;
         log.info("GOST signature: algorithm={}, provider={}", resolvedSignatureAlgorithm, resolvedProvider != null ? resolvedProvider : "default");
+    }
+
+    /**
+     * Загрузка PFX: сначала через GAMMA (ключ тогда подходит для GAMMA Signature), при ошибке — через JDK.
+     */
+    private static KeyStore loadKeyStore(byte[] keystoreBytes, char[] password) throws Exception {
+        try {
+            KeyStore store = KeyStore.getInstance("PKCS12", "GAMMA");
+            store.load(new ByteArrayInputStream(keystoreBytes), password);
+            if (store.size() > 0) {
+                log.info("Keystore loaded with GAMMA provider");
+                return store;
+            }
+        } catch (Exception e) {
+            log.warn("GAMMA KeyStore load failed ({}), falling back to JDK PKCS12", e.getMessage());
+        }
+        KeyStore store = KeyStore.getInstance("PKCS12");
+        store.load(new ByteArrayInputStream(keystoreBytes), password);
+        log.info("JDK PKCS12 loaded, store.size()={}", store.size());
+        return store;
+    }
+
+    /** Перебор всех алиасов: для JDK после fallback первый alias может не подходить. */
+    @SuppressWarnings("unchecked")
+    private static KeyCertPair getFirstKeyAndCert(KeyStore store, char[] password) {
+        try {
+            Enumeration<String> aliases = store.aliases();
+            int idx = 0;
+            while (aliases.hasMoreElements()) {
+                String a;
+                Object next = aliases.nextElement();
+                a = next != null ? next.toString() : null;
+                if (a == null) continue;
+                idx++;
+                try {
+                    PrivateKey k = (PrivateKey) store.getKey(a, password);
+                    X509Certificate c = (X509Certificate) store.getCertificate(a);
+                    log.info("alias[{}] '{}' -> key={} cert={}", idx, a, k != null, c != null);
+                    if (k != null && c != null) return new KeyCertPair(k, c);
+                } catch (Exception e) {
+                    log.warn("alias '{}': getKey/getCertificate failed: {}", a, e.getMessage());
+                }
+            }
+            if (idx == 0) log.warn("Keystore has zero aliases");
+        } catch (Exception e) {
+            log.warn("getFirstKeyAndCert failed: {}", e.getMessage());
+        }
+        return null;
+    }
+
+    private static void logErrorDetails(KeyStore store, String firstAlias, char[] password) {
+        try {
+            java.util.Enumeration<?> aliases = store.aliases();
+            int i = 0;
+            while (aliases.hasMoreElements()) {
+                Object a = aliases.nextElement();
+                String aliasStr = a != null ? a.toString() : "null";
+                boolean keyNull = true, certNull = true;
+                Exception keyEx = null;
+                try {
+                    Key k = store.getKey(aliasStr, password);
+                    Certificate c = store.getCertificate(aliasStr);
+                    keyNull = (k == null);
+                    certNull = (c == null);
+                } catch (Exception e) {
+                    keyEx = e;
+                }
+                log.error("Keystore alias[{}] '{}': getKey={} getCertificate={} {}", i + 1, aliasStr, !keyNull, !certNull, keyEx != null ? keyEx.getMessage() : "");
+                i++;
+            }
+        } catch (Exception e) {
+            log.error("Could not list aliases: {}", e.getMessage());
+        }
+    }
+
+    private static final class KeyCertPair {
+        final PrivateKey key;
+        final X509Certificate cert;
+        KeyCertPair(PrivateKey key, X509Certificate cert) { this.key = key; this.cert = cert; }
+    }
+
+    /**
+     * В GAMMA alias может быть StoreObjectParam; ключ/серт получают по getSn(), не по самому alias.
+     */
+    private static Object getKeyId(KeyStore store) throws Exception {
+        if (!store.aliases().hasMoreElements()) {
+            throw new IllegalStateException("Keystore has no entries");
+        }
+        Object alias = store.aliases().nextElement();
+        if (alias != null && alias.getClass().getName().contains("StoreObjectParam")) {
+            try {
+                Object sn = alias.getClass().getMethod("getSn").invoke(alias);
+                if (sn != null) return sn;
+            } catch (Exception ignored) { }
+        }
+        return alias;
     }
 
     private static final class ResolvedAlg {
