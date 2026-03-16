@@ -1,0 +1,86 @@
+akashaev@pc153037:/mnt/d/ideaProjects/SignService$ docker logs signservice-sign-service-1 
+Tumar CSP archive found. Installing from /install/TumarCSP.tgz
+Installing TumarCSP v.5.2.15.051 for linux64...START
+Installing TumarCSP v.5.2.15.051 for linux64...STOP
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.2)
+
+2026-03-16T10:32:04.363Z  INFO 1 --- [SignService] [           main] kz.npck.jws.SignServiceApplication       : Starting SignServiceApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 1 (/app/app.jar started by root in /app)
+2026-03-16T10:32:04.365Z  INFO 1 --- [SignService] [           main] kz.npck.jws.SignServiceApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-03-16T10:32:05.056Z  INFO 1 --- [SignService] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-03-16T10:32:05.066Z  INFO 1 --- [SignService] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat] 
+2026-03-16T10:32:05.067Z  INFO 1 --- [SignService] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-03-16T10:32:05.087Z  INFO 1 --- [SignService] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-16T10:32:05.088Z  INFO 1 --- [SignService] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 648 ms
+2026-03-16T10:32:05.231Z  WARN 1 --- [SignService] [           main] kz.npck.jws.service.SignService          : GAMMA KeyStore load failed (Unclosed character class near index 30
+.߯a[w�B?Kl�@D�4���b+8j
+                              ^), falling back to JDK PKCS12
+2026-03-16T10:32:05.282Z  WARN 1 --- [SignService] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'signController' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/kz/npck/jws/controller/SignController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'signService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/kz/npck/jws/service/SignService.class]: Failed to instantiate [kz.npck.jws.service.SignService]: Constructor threw exception
+2026-03-16T10:32:05.284Z  INFO 1 --- [SignService] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat] 
+2026-03-16T10:32:05.296Z  INFO 1 --- [SignService] [           main] .s.b.a.l.ConditionEvaluationReportLogger :
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-03-16T10:32:05.309Z ERROR 1 --- [SignService] [           main] o.s.boot.SpringApplication               : Application run failed    
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'signController' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/kz/npck/jws/controller/SignController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'signService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/kz/npck/jws/service/SignService.class]: Failed to instantiate [kz.npck.jws.service.SignService]: Constructor threw exception
+        at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1212) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:971) ~[spring-context-6.1.11.jar!/:6.1.11]
+        at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.11.jar!/:6.1.11]
+        at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.2.jar!/:3.3.2]
+        at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.2.jar!/:3.3.2]
+        at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.2.jar!/:3.3.2]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.2.jar!/:3.3.2]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.2.jar!/:3.3.2]
+        at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.2.jar!/:3.3.2]
+        at kz.npck.jws.SignServiceApplication.main(SignServiceApplication.java:12) ~[!/:0.0.1-SNAPSHOT]
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+        at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+        at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91) ~[app.jar:0.0.1-SNAPSHOT]
+        at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53) ~[app.jar:0.0.1-SNAPSHOT]
+        at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58) ~[app.jar:0.0.1-SNAPSHOT]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'signService' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/kz/npck/jws/service/SignService.class]: Failed to instantiate [kz.npck.jws.service.SignService]: Constructor threw exception
+        at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:318) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:306) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1212) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        ... 24 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [kz.npck.jws.service.SignService]: Constructor threw exception
+        at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:221) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:117) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:315) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        ... 38 common frames omitted
+Caused by: java.lang.IllegalStateException: Keystore has no key/cert (wrong password or empty PFX?)
+        at kz.npck.jws.service.SignService.<init>(SignService.java:72) ~[!/:0.0.1-SNAPSHOT]
+        at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[na:na]   
+        at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[na:na]
+        at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[na:na]
+        at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:208) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        ... 40 common frames omitted
