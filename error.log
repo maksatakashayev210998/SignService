@@ -1,0 +1,28 @@
+Caused by: java.lang.IllegalStateException: PFX opens and contains a certificate, but NO PRIVATE KEY was found. Re-export the PFX from TumarCSP/token WITH the private key, or the key may use a different password. (alias '1' -> key=false cert=true)
+        at kz.npck.jws.service.SignService.<init>(SignService.java:94) ~[!/:0.0.1-SNAPSHOT]
+        at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[na:na]   
+        at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[na:na]
+        at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[na:na]
+        at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:208) ~[spring-beans-6.1.11.jar!/:6.1.11]
+        ... 40 common frames omitted
+
+
+Сообщение об ошибке обновлено.
+
+Что видно по логам
+
+Файл открывается, пароль верный (store load прошёл, cert есть).
+По записи с алиасом '1': сертификат есть, приватного ключа нет (getKey возвращает null).
+Что это значит
+
+Файл cert.pfx либо:
+
+Экспортирован без приватного ключа — в нём только сертификат. Нужно заново экспортировать контейнер/ключ из TumarCSP (или другого хранилища) с включением закрытого ключа в PFX.
+Ключ защищён другим паролем — в PKCS#12 у ключа может быть свой пароль; тогда для извлечения ключа нужен именно он (часто его можно задать при экспорте).
+Что сделать
+
+В программе, откуда делали экспорт (TumarCSP, КриптоПро и т.п.), заново экспортировать сертификат в PFX и при экспорте:
+включить опцию вроде «Экспортировать закрытый ключ» / «Export private key»;
+если спрашивают отдельный пароль для ключа — запомнить его; в нашем коде сейчас используется один пароль и для хранилища, и для ключа.
+Положить новый cert.pfx в ./certs/, при необходимости обновить пароль в docker-compose (если для ключа задали другой) и перезапустить контейнер.
+После этого в логах при успехе будет что-то вроде alias[1] '1' -> key=true cert=true.
