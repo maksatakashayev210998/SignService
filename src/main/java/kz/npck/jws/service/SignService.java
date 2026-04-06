@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -31,12 +32,12 @@ public class SignService {
     private static final String[] SIGNATURE_ALGORITHM_CANDIDATES = {
             "GOST3410-2015-512",
             gammaOidGost2015_512(),  // OID из kz.gamma.asn1.cryptopro.KZObjectIndentifiers (как в Example.kt)
-            "GOST3411withGOST3410-2012-512",
-            "GOST3410-2012-512",
-            "GOST3411withGOST3410-2012-256",
-            "GOST3410-2012-256",
-            "1.2.398.3.10.1.1.2.1",  // OID ГОСТ Р 34.10-2012 512
-            "1.2.398.3.10.1.1.1.1",  // OID ГОСТ Р 34.10-2012 256
+            // "GOST3411withGOST3410-2012-512",
+            // "GOST3410-2012-512",
+            // "GOST3411withGOST3410-2012-256",
+            // "GOST3410-2012-256",
+            // "1.2.398.3.10.1.1.2.1",  // OID ГОСТ Р 34.10-2012 512
+            // "1.2.398.3.10.1.1.1.1",  // OID ГОСТ Р 34.10-2012 256
     };
 
     private static String gammaOidGost2015_512() {
@@ -74,7 +75,7 @@ public class SignService {
 
         // Сначала пробуем загрузить через GAMMA — тогда ключ будет "известен" провайдеру и подпись не даст "Unknown private key".
         // Как в Example.kt: KeyStore.getInstance("PKCS12", "GAMMA"), alias может быть StoreObjectParam с getSn().
-        KeyStore store = loadKeyStore(keystoreBytes, password);
+        KeyStore store = loadKeyStore(path, keystoreBytes, password);
         Object keyId = getKeyId(store);
         String alias = keyId == null ? null : (keyId instanceof String ? (String) keyId : keyId.toString());
         PrivateKey pk = (PrivateKey) store.getKey(alias, password);
@@ -105,17 +106,32 @@ public class SignService {
     /**
      * Загрузка PFX: сначала через GAMMA (ключ тогда подходит для GAMMA Signature), при ошибке — через JDK.
      */
-    private static KeyStore loadKeyStore(byte[] keystoreBytes, char[] password) throws Exception {
+    private static KeyStore loadKeyStore(String keystorePath, byte[] keystoreBytes, char[] password) throws Exception {
+        try {
+            KeyStore store = KeyStore.getInstance("PKCS12", "GAMMA");
+            byte[] keystorePathBytes = keystorePath.getBytes(StandardCharsets.UTF_8);
+            store.load(new ByteArrayInputStream(keystorePathBytes), password);
+            if (store.size() > 0) {
+                log.info("Keystore loaded with GAMMA provider (path mode)");
+                return store;
+            }
+            log.warn("GAMMA KeyStore path-mode load returned zero entries, trying raw PKCS12 bytes");
+        } catch (Exception pathModeException) {
+            log.warn("GAMMA KeyStore path-mode load failed ({}), trying raw PKCS12 bytes", pathModeException.getMessage());
+        }
+
         try {
             KeyStore store = KeyStore.getInstance("PKCS12", "GAMMA");
             store.load(new ByteArrayInputStream(keystoreBytes), password);
             if (store.size() > 0) {
-                log.info("Keystore loaded with GAMMA provider");
+                log.info("Keystore loaded with GAMMA provider (raw-bytes mode)");
                 return store;
             }
-        } catch (Exception e) {
-            log.warn("GAMMA KeyStore load failed ({}), falling back to JDK PKCS12", e.getMessage());
+            log.warn("GAMMA KeyStore raw-bytes mode returned zero entries, falling back to JDK PKCS12");
+        } catch (Exception rawBytesException) {
+            log.warn("GAMMA KeyStore raw-bytes mode failed ({}), falling back to JDK PKCS12", rawBytesException.getMessage());
         }
+
         KeyStore store = KeyStore.getInstance("PKCS12");
         store.load(new ByteArrayInputStream(keystoreBytes), password);
         log.info("JDK PKCS12 loaded, store.size()={}", store.size());

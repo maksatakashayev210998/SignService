@@ -1,0 +1,8 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\Defaults\Provider\Tumar CSP\Plugins\libcsp-plg-jtoken.so.1.0.0]
+"Image Path"="libcsp-plg-jtoken.so.1.0.0"
+"Created"="20250301000000Z"
+"Expires"="20260401000000Z"
+"Name"="NPCKCLIENT"
+"Sign"=hex:dc,a7,3f,a3,11,17,e6,67,00,2d,0c,03,d8,79,3a,2f,0d,2f,af,74,58,95,0f,09,62,53,87,4d,75,f3,1f,60

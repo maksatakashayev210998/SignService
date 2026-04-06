@@ -18,6 +18,13 @@ COPY pom.xml ./
 COPY src ./src
 COPY libs ./libs
 
+# Проверка PKCS12 перед сборкой (нужен ./certs/cert.pfx в контексте сборки)
+COPY certs/cert.pfx ./certs/cert.pfx
+ARG SIGN_KEYSTORE_PASSWORD=1q2w3e4r5t
+RUN keytool -list -v -storetype PKCS12 \
+    -keystore ./certs/cert.pfx \
+    -storepass "${SIGN_KEYSTORE_PASSWORD}"
+
 # JAR GAMMA в локальный Maven-репозиторий без вызова mvn (чтобы не качать плагины до добавления CA)
 RUN MVN_REPO="/root/.m2/repository" && \
     ARTIFACT_DIR="$MVN_REPO/kz/gamma/GammaTechProvider/1.0" && \

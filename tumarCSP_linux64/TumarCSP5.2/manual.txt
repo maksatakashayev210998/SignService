@@ -1,0 +1,53 @@
+########################################################
+#                      TumarCSP                        #
+########################################################
+
+The installer script is setup_csp.sh
+
+
+############## Viewing instructions for the script ##############
+Running a script without any parameters will give instructions for using the installation script:
+(x.x.x - version of the software, OS - the name of the operating system)
+
+./setup_csp.sh
+
+TumarCSP x.x.x.x for OS 
+WARNING!!! Before performing any operations, please, stop all applications that use TumarCSP
+        Usage: ./setup_csp.sh [OPTIONS]
+                install       - Installing CSP on a clean system
+                update        - Backup current CSP, uninstall and install new CSP
+                uninstall     - Full uninstalling CSP
+
+				
+############## Install TumarCSP ##############
+Run the script with the parameter <install> will install the software TumarCSP to a "clean" system.
+That is, assumes that the directory /TumarCSP in the system has not been previously.
+If you are installing (./setup_csp.sh install), will run:
+- Create the necessary directory structure
+- Copy all the files necessary to run in the correct directories
+- Create profile-file cptumar.conf
+
+[profiles]
+FSystem=file://TEST@//home/user
+
+   FSystem --- profile name
+   file --- the key container on a file system
+   TEST --- filename - the key container *. bin
+   /home/user --- the full path to the key container TEST.bin
+
+############## Update TumarCSP ##############
+If you are updating (./setup_csp.sh update), will run:
+- Back up the existing system of building software TumarCSP (backup archive will be placed in the current directory with the script setup_csp.sh)
+- Updatr the software
+
+
+############## Uninstall TumarCSP ##############
+If you uninstall (./setup_csp.sh uninstall), will run:
+- Complete removal of software TumarCSP
+
+IMPORTANT!!! Before removing TumarCSP stop the execution of all applications using software TumarCSP.
+If use the uninstall option on display will show the confirmation for deletion TumarCSP. The removal process will begin only when inscribing the words yes and pressing ENTER:
+If you specify anything other than the word yes, the removal process will be aborted. On display will show the following text:
+./setup_csp.sh uninstall
+Are you sure you want to uninstall TumarCSP x.x.x.x? (y/n): n
+Uninstall TumarCSP x.x.x.x aborted

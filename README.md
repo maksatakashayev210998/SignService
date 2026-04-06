@@ -32,9 +32,11 @@
 
 ### Запуск в Docker
 
-1) Положите `cert.pfx` в `./certs/`.
-2) Положите архив Tumar CSP в корень проекта как `./tumarCSP_linux64.tgz` (у вас он уже есть).
-3) Запустите:
+1) Положите `cert.pfx` в `./certs/` — **файл нужен и для сборки образа**: при `docker build` выполняется проверка `keytool -list -v -storetype PKCS12 -keystore ./certs/cert.pfx`.
+2) Если пароль PFX не `1q2w3e4r5t`, передайте его при сборке:  
+   `docker compose build --build-arg SIGN_KEYSTORE_PASSWORD=ваш_пароль`
+3) Положите архив Tumar CSP в корень проекта как `./tumarCSP_linux64.tgz` (у вас он уже есть).
+4) Запустите:
 
 ```bash
 docker compose up --build

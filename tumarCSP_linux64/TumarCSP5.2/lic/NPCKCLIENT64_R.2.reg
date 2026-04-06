@@ -1,0 +1,8 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\Defaults\Provider\Tumar CSP\RegInfo\NPCKCLIENT64_R.2]
+"User"="NPCKCLIENT64_R.2"
+"Created"="20250301000000Z"
+"Expires"="20260401000000Z"
+"Name"="NPCKCLIENT"
+"Sign"=hex:15,88,01,07,bb,04,55,9e,0a,d6,43,9d,ba,e4,be,5a,49,59,b9,61,b0,1b,fb,7e,01,b4,7c,2f,80,89,88,c0
