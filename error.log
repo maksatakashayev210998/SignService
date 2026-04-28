@@ -1,11 +1,26 @@
-sign-service-1  | 2026-04-28T07:56:03.466Z  INFO 1 --- [SignService] [           main] kz.npck.jws.SignServiceApplication       : No active profile set, falling back to 1 default profile: "default"
-sign-service-1  | 2026-04-28T07:56:04.274Z  INFO 1 --- [SignService] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-sign-service-1  | 2026-04-28T07:56:04.286Z  INFO 1 --- [SignService] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-sign-service-1  | 2026-04-28T07:56:04.286Z  INFO 1 --- [SignService] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
-sign-service-1  | 2026-04-28T07:56:04.313Z  INFO 1 --- [SignService] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-sign-service-1  | 2026-04-28T07:56:04.314Z  INFO 1 --- [SignService] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 781 ms
-sign-service-1  | 2026-04-28T07:56:04.473Z  INFO 1 --- [SignService] [           main] kz.npck.jws.service.SignService          : Loading keystore from /certs/cert.pfx (2984 bytes), password length=9
-sign-service-1  | 2026-04-28T07:56:04.493Z  WARN 1 --- [SignService] [           main] kz.npck.jws.service.SignService          : GAMMA KeyStore path-mode load failed (Keys loading error. Possible cause: password is incorrect.), trying raw PKCS12 bytes
-sign-service-1  | 2026-04-28T07:56:04.494Z  WARN 1 --- [SignService] [           main] kz.npck.jws.service.SignService          : GAMMA KeyStore raw-bytes mode failed (Unclosed character class near index 30
-sign-service-1  | .߯a[w�B?Kl�@D����b+8j
-sign-service-1  |                               ^), falling back to JDK PKCS12
+Attaching to sign-service-1
+sign-service-1  | Tumar CSP archive found. Installing from /install/TumarCSP.tgz
+sign-service-1  | Installing TumarCSP v.5.2.15.051 for linux64...START
+sign-service-1  | Installing TumarCSP v.5.2.15.051 for linux64...STOP
+sign-service-1  | 
+sign-service-1  |   .   ____          _            __ _ _
+sign-service-1  |  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+sign-service-1  | ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+sign-service-1  |  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+sign-service-1  |   '  |____| .__|_| |_|_| |_\__, | / / / /
+sign-service-1  |  =========|_|==============|___/=/_/_/_/
+sign-service-1  | 
+sign-service-1  |  :: Spring Boot ::                (v3.3.2)
+sign-service-1  | 
+sign-service-1  | 2026-04-28T10:45:40.623Z  INFO 1 --- [SignService] [           main] kz.npck.jws.SignServiceApplication       : Starting SignServiceApplication v0.0.1-SNAPSHOT using Java 21.0.10 with PID 1 (/app/app.jar started by root in /app)
+sign-service-1  | 2026-04-28T10:45:40.625Z  INFO 1 --- [SignService] [           main] kz.npck.jws.SignServiceApplication       : No active profile set, falling back to 1 default profile: "default"
+sign-service-1  | 2026-04-28T10:45:41.436Z  INFO 1 --- [SignService] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+sign-service-1  | 2026-04-28T10:45:41.448Z  INFO 1 --- [SignService] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+sign-service-1  | 2026-04-28T10:45:41.448Z  INFO 1 --- [SignService] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+sign-service-1  | 2026-04-28T10:45:41.476Z  INFO 1 --- [SignService] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+sign-service-1  | 2026-04-28T10:45:41.482Z  INFO 1 --- [SignService] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 780 ms
+sign-service-1  | 2026-04-28T10:45:41.645Z  INFO 1 --- [SignService] [           main] kz.npck.jws.service.SignService          : Loading keystore from /certs/cert.pfx (2984 bytes), password length=10
+sign-service-1  | 2026-04-28T10:45:41.717Z  INFO 1 --- [SignService] [           main] kz.npck.jws.service.SignService          : Keystore loaded with GAMMA provider (path mode)
+sign-service-1  | 2026-04-28T10:45:41.729Z  INFO 1 --- [SignService] [           main] kz.npck.jws.service.SignService          : GOST signature: algorithm=1.2.398.3.10.1.1.2.3.2, provider=GAMMA
+sign-service-1  | 2026-04-28T10:45:41.942Z  INFO 1 --- [SignService] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+sign-service-1  | 2026-04-28T10:45:41.961Z  INFO 1 --- [SignService] [           main] kz.npck.jws.SignServiceApplication       : Started SignServiceApplication in 1.721 seconds (process running for 2.263)
